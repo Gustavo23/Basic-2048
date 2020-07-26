@@ -17,9 +17,12 @@ public class Grid : Node2D {
     public float offset = 128;
     public object[,] board;
 
+    private Random _random = new Random();
+
     public override void _Ready() {
         board = new object[width, height];
         generateBackground();
+        generateNewPiece();
     }
 
     public void generateBackground() {
@@ -69,9 +72,29 @@ public class Grid : Node2D {
 
     public void generateNewPiece() {
         if (isBlankSpace()) {
-            // TODO: generate a new piece
+            int piecesMade = 0;
+            while (piecesMade < 2) {
+                int xPosition = (int)(Math.Floor(RandRange(0,4)));
+                int yPosition = (int)(Math.Floor(RandRange(0,4)));
+                if(board[xPosition, yPosition] == null) {
+                    Node2D temp = (Node2D)generateTwoOrFour().Instance();
+                    AddChild(temp);
+                    board[xPosition, yPosition] = temp;
+                    temp.Position = gridToPixel(new Vector2(xPosition, yPosition));
+                    piecesMade += 1;
+                }
+            }
         } else {
             GD.Print("No more room!");
+        }
+    }
+
+    public PackedScene generateTwoOrFour() {
+        var temp = RandRange(0,100);
+        if(temp <= 75) {
+            return twoPiece;
+        } else {
+            return fourPiece;
         }
     }
 
@@ -81,6 +104,10 @@ public class Grid : Node2D {
 
     public void _on_KeyboardControl_Move(Vector2 direction) {
         moveAllPieces(direction);
+    }
+
+    private float RandRange(float min, float max) {
+        return (float)_random.NextDouble() * (max-min) + min;
     }
 
 }
