@@ -71,7 +71,7 @@ public class Grid : Node2D {
         if(canControl) {
             canControl = false;
             if(direction == Vector2.Right) {
-                for(int i=0; i<width-1; i++) {
+                for(int i=width-2; i>-1; i--) {
                     for(int j=0; j<height; j++) {
                         if(board[i, j] != null) {
                             movePiece(new Vector2(i,j), Vector2.Right);
@@ -79,7 +79,7 @@ public class Grid : Node2D {
                     }
                 }
             } else if(direction == Vector2.Left) {
-                for(int i=width-1; i>0; i--) {
+                for(int i=1; i<width; i++) {
                     for(int j=0; j<height; j++) {
                         if(board[i, j] != null) {
                             movePiece(new Vector2(i,j), Vector2.Left);
@@ -103,9 +103,9 @@ public class Grid : Node2D {
                     }
                 }
             }
-            generateNewPiece(1); 
         }
-        await ToSignal(GetTree().CreateTimer(0.33f), "timeout");
+        await ToSignal(GetTree().CreateTimer(0.4f), "timeout");
+        generateNewPiece(1); 
         canControl = true;
     }
 
@@ -123,7 +123,7 @@ public class Grid : Node2D {
         PackedScene tempValue = (board[(int)piece.x, (int)piece.y] as Piece).nextValue;
 
         if(direction == Vector2.Right) {
-            for(int i=(int)nextSpace.x; i<width; i++) {
+            for(int i=width-1; i>(int)nextSpace.x-1; i--) {
                 // If it's the end of the board, and that spot is null
                 if(i == width - 1 && board[i, (int)piece.y] == null) {
                     moveAndSetBoardValue(piece, new Vector2(width-1, piece.y));
@@ -148,7 +148,7 @@ public class Grid : Node2D {
             }
         }
         else if(direction == Vector2.Left) {
-            for(int i=(int)nextSpace.x; i>-1; i--) {
+            for(int i=0; i<(int)nextSpace.x+1; i++) {
                 // If it's the end of the board, and that spot is null
                 if(i == 0 && board[i, (int)piece.y] == null) {
                     moveAndSetBoardValue(piece, new Vector2(0, piece.y));

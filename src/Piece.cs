@@ -34,11 +34,10 @@ public class Piece : Node2D {
         modulateTween.InterpolateProperty(this, "modulate", Modulate, new Color(0,0,0,0), 0.2f, Tween.TransitionType.Sine, Tween.EaseType.Out);
         sizeTween.Start();
         modulateTween.Start();
-        QueueFree();
     }
 
     public void _on_ModulateTween_tween_completed(object obj, NodePath key) {
-        if(Scale == new Vector2(1.5f, 1.5f)) {
+        if(Scale >= new Vector2(1.4f, 1.4f)) {
             QueueFree();
         }
     }
