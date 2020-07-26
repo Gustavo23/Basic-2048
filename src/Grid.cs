@@ -79,7 +79,7 @@ public class Grid : Node2D {
                     }
                 }
             } else if(direction == Vector2.Left) {
-                for(int i=1; i<width; i++) {
+                for(int i=0; i<width; i++) {
                     for(int j=0; j<height; j++) {
                         if(board[i, j] != null) {
                             movePiece(new Vector2(i,j), Vector2.Left);
@@ -123,7 +123,7 @@ public class Grid : Node2D {
         PackedScene tempValue = (board[(int)piece.x, (int)piece.y] as Piece).nextValue;
 
         if(direction == Vector2.Right) {
-            for(int i=width-1; i>(int)nextSpace.x-1; i--) {
+            for(int i=(int)nextSpace.x; i<=width-1; i++) {
                 // If it's the end of the board, and that spot is null
                 if(i == width - 1 && board[i, (int)piece.y] == null) {
                     moveAndSetBoardValue(piece, new Vector2(width-1, piece.y));
@@ -148,7 +148,7 @@ public class Grid : Node2D {
             }
         }
         else if(direction == Vector2.Left) {
-            for(int i=0; i<(int)nextSpace.x+1; i++) {
+            for(int i=(int)nextSpace.x; i>=0; i--) {
                 // If it's the end of the board, and that spot is null
                 if(i == 0 && board[i, (int)piece.y] == null) {
                     moveAndSetBoardValue(piece, new Vector2(0, piece.y));
@@ -225,21 +225,31 @@ public class Grid : Node2D {
     }
 
     public void removeAndClear(Vector2 piece) {
-        if(board[(int)piece.x, (int)piece.y] != null) {
-            (board[(int)piece.x, (int)piece.y] as Piece).remove();
-            board[(int)piece.x, (int)piece.y] = null;
-        }
-
+        (board[(int)piece.x, (int)piece.y] as Piece).remove();
+        board[(int)piece.x, (int)piece.y] = null;
     }
 
     public void generateNewPiece(int numberOfPieces) {
+        // SPECIFIC SETUP FOR TESTING
+        // Piece temp = twoPiece.Instance() as Piece;
+        // AddChild(temp);
+        // board[0, 3] = temp;
+        // temp.Position = gridToPixel(new Vector2(0, 3));
+        // Piece temp2 = fourPiece.Instance() as Piece;
+        // AddChild(temp2);
+        // board[2, 3] = temp2;
+        // temp2.Position = gridToPixel(new Vector2(2, 3));
+        // Piece temp3 = fourPiece.Instance() as Piece;
+        // AddChild(temp3);
+        // board[3, 3] = temp3;
+        // temp3.Position = gridToPixel(new Vector2(3, 3));
         if (isBlankSpace()) {
             int piecesMade = 0;
             while (piecesMade < numberOfPieces) {
                 int xPosition = (int)(Math.Floor(RandRange(0,4)));
                 int yPosition = (int)(Math.Floor(RandRange(0,4)));
                 if(board[xPosition, yPosition] == null) {
-                    Node2D temp = (Node2D)generateTwoOrFour().Instance();
+                    Piece temp = (Piece)generateTwoOrFour().Instance();
                     AddChild(temp);
                     board[xPosition, yPosition] = temp;
                     temp.Position = gridToPixel(new Vector2(xPosition, yPosition));
