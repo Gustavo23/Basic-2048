@@ -67,9 +67,7 @@ public class Grid : Node2D {
     }
 
     public void moveAllPieces(Vector2 direction) {
-        if(direction == Vector2.Up) {
-
-        } else if(direction == Vector2.Right) {
+        if(direction == Vector2.Right) {
             for(int i=0; i<width-1; i++) {
                 for(int j=0; j<height; j++) {
                     if(board[i, j] != null) {
@@ -77,20 +75,31 @@ public class Grid : Node2D {
                     }
                 }
             }
-        } else if(direction == Vector2.Down) {
-            
         } else if(direction == Vector2.Left) {
             for(int i=width-1; i>0; i--) {
                 for(int j=0; j<height; j++) {
                     if(board[i, j] != null) {
-                        GD.Print("i e j:"+ i + ' ' + j);
                         movePiece(new Vector2(i,j), Vector2.Left);
                     }
                 }
             }
-        } else {
-            // TODO
-        }
+        } else if(direction == Vector2.Up) {
+            for(int i=0; i<width; i++) {
+                for(int j=height-1; j>-1; j--) {
+                    if(board[i, j] != null) {
+                        movePiece(new Vector2(i,j), Vector2.Up);
+                    }
+                }
+            }
+        } else if(direction == Vector2.Down) {
+            for(int i=0; i<width; i++) {
+                for(int j=0; j<height; j++) {
+                    if(board[i, j] != null) {
+                        movePiece(new Vector2(i,j), Vector2.Down);
+                    }
+                }
+            }
+        } 
     }
 
     public void moveAndSetBoardValue(Vector2 currentPosition, Vector2 newPosition) {
@@ -104,7 +113,7 @@ public class Grid : Node2D {
         Piece thisPiece = board[(int)piece.x, (int)piece.y] as Piece;
         int thisValue = thisPiece.value;
         Vector2 nextSpace = new Vector2((int)piece.x + direction.x, (int)piece.y + direction.y);
-        PackedScene nextValue = (board[(int)nextSpace.x, (int)nextSpace.y] as PackedScene);
+        PackedScene tempValue = (board[(int)piece.x, (int)piece.y] as Piece).nextValue;
 
         if(direction == Vector2.Right) {
             for(int i=(int)nextSpace.x; i<width; i++) {
@@ -119,7 +128,6 @@ public class Grid : Node2D {
                 }
                 // Otherwise, if it's the same:
                 else if(board[i, (int)piece.y] != null && (board[i, (int)piece.y] as Piece).value == thisValue) {
-                    PackedScene tempValue = (board[i, (int)piece.y] as Piece).nextValue;
                     removeAndClear(piece);
                     removeAndClear(new Vector2(i, piece.y));
                     Piece newPiece = tempValue.Instance() as Piece;
@@ -129,7 +137,7 @@ public class Grid : Node2D {
                 }
             }
         }
-        if(direction == Vector2.Left) {
+        else if(direction == Vector2.Left) {
             for(int i=(int)nextSpace.x; i>-1; i--) {
                 // If it's the end of the board, and that spot is null
                 if(i == 0 && board[i, (int)piece.y] == null) {
@@ -142,7 +150,6 @@ public class Grid : Node2D {
                 }
                 // Otherwise, if it's the same value:
                 else if(board[i, (int)piece.y] != null && (board[i, (int)piece.y] as Piece).value == thisValue) {
-                    PackedScene tempValue = (board[i, (int)piece.y] as Piece).nextValue;
                     removeAndClear(piece);
                     removeAndClear(new Vector2(i, piece.y));
                     Piece newPiece = tempValue.Instance() as Piece;
@@ -152,19 +159,57 @@ public class Grid : Node2D {
                 }
             }
         }
-        if(direction == Vector2.Up) {
-            // todo
+        else if(direction == Vector2.Up) {
+            for(int i=(int)piece.y+1; i<height; i++) {
+                // If it's the end of the board, and that spot is null
+                if(i == height - 1 && board[(int)piece.x, i] == null) {
+                    moveAndSetBoardValue(piece, new Vector2(piece.x, height-1));
+                }
+                // If this spot is full, and the value is not the same, then move to one before it
+                else if(board[(int)piece.x, i] != null && (board[(int)piece.x, i] as Piece).value != thisValue) {
+                    // Move to one before it
+                    moveAndSetBoardValue(piece, new Vector2(piece.x, i-1));
+                }
+                // Otherwise, if it's the same:
+                else if(board[(int)piece.x, i] != null && (board[(int)piece.x, i] as Piece).value == thisValue) {
+                    removeAndClear(piece);
+                    removeAndClear(new Vector2(piece.x, i));
+                    Piece newPiece = tempValue.Instance() as Piece;
+                    AddChild(newPiece);
+                    board[(int)piece.x, i] = newPiece;
+                    newPiece.Position = gridToPixel(new Vector2(piece.x, i));
+                }
+            }
         }
-        if(direction == Vector2.Down) {
-            // todo
+        else if(direction == Vector2.Down) {
+            for(int i=(int)piece.y-1; i>-1; i--) {
+                // If it's the end of the board, and that spot is null
+                if(i == 0 && board[(int)piece.x, i] == null) {
+                    moveAndSetBoardValue(piece, new Vector2(piece.x, 0));
+                }
+                // If this spot is full, and the value is not the same, then move to one before it
+                else if(board[(int)piece.x, i] != null && (board[(int)piece.x, i] as Piece).value != thisValue) {
+                    // Move to one before it
+                    moveAndSetBoardValue(piece, new Vector2(piece.x, i+1));
+                }
+                // Otherwise, if it's the same value:
+                else if(board[(int)piece.x, i] != null && (board[(int)piece.x, i] as Piece).value == thisValue) {
+                    removeAndClear(piece);
+                    removeAndClear(new Vector2(piece.x, i));
+                    Piece newPiece = tempValue.Instance() as Piece;
+                    AddChild(newPiece);
+                    board[(int)piece.x, i] = newPiece;
+                    newPiece.Position = gridToPixel(new Vector2((int)piece.x, i));
+                }
+            }
         }
     }
 
     public void removeAndClear(Vector2 piece) {
         if(board[(int)piece.x, (int)piece.y] != null) {
             (board[(int)piece.x, (int)piece.y] as Piece).remove();
+            board[(int)piece.x, (int)piece.y] = null;
         }
-        board[(int)piece.x, (int)piece.y] = null;
 
     }
 
