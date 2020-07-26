@@ -15,7 +15,7 @@ public class Piece : Node2D {
     }
 
     public void move(Vector2 newPosition) {
-        moveTween.InterpolateProperty(this, "position", Position, newPosition, 0.3f, Tween.TransitionType.Bounce, Tween.EaseType.Out);
+        moveTween.InterpolateProperty(this, "position", Position, newPosition, 0.1f, Tween.TransitionType.Bounce, Tween.EaseType.Out);
         moveTween.Start();
     }
 

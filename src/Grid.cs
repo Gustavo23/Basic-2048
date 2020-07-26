@@ -22,7 +22,7 @@ public class Grid : Node2D {
     public override void _Ready() {
         board = new object[width, height];
         generateBackground();
-        generateNewPiece();
+        generateNewPiece(2);
     }
 
     public void generateBackground() {
@@ -99,7 +99,8 @@ public class Grid : Node2D {
                     }
                 }
             }
-        } 
+        }
+        generateNewPiece(1); 
     }
 
     public void moveAndSetBoardValue(Vector2 currentPosition, Vector2 newPosition) {
@@ -120,11 +121,13 @@ public class Grid : Node2D {
                 // If it's the end of the board, and that spot is null
                 if(i == width - 1 && board[i, (int)piece.y] == null) {
                     moveAndSetBoardValue(piece, new Vector2(width-1, piece.y));
+                    break;
                 }
                 // If this spot is full, and the value is not the same, then move to one before it
                 else if(board[i, (int)piece.y] != null && (board[i, (int)piece.y] as Piece).value != thisValue) {
                     // Move to one before it
                     moveAndSetBoardValue(piece, new Vector2(i-1, piece.y));
+                    break;
                 }
                 // Otherwise, if it's the same:
                 else if(board[i, (int)piece.y] != null && (board[i, (int)piece.y] as Piece).value == thisValue) {
@@ -134,6 +137,7 @@ public class Grid : Node2D {
                     AddChild(newPiece);
                     board[i, (int)piece.y] = newPiece;
                     newPiece.Position = gridToPixel(new Vector2(i, (int)piece.y));
+                    break;
                 }
             }
         }
@@ -142,11 +146,13 @@ public class Grid : Node2D {
                 // If it's the end of the board, and that spot is null
                 if(i == 0 && board[i, (int)piece.y] == null) {
                     moveAndSetBoardValue(piece, new Vector2(0, piece.y));
+                    break;
                 }
                 // If this spot is full, and the value is not the same, then move to one before it
                 else if(board[i, (int)piece.y] != null && (board[i, (int)piece.y] as Piece).value != thisValue) {
                     // Move to one before it
                     moveAndSetBoardValue(piece, new Vector2(i+1, piece.y));
+                    break;
                 }
                 // Otherwise, if it's the same value:
                 else if(board[i, (int)piece.y] != null && (board[i, (int)piece.y] as Piece).value == thisValue) {
@@ -156,6 +162,7 @@ public class Grid : Node2D {
                     AddChild(newPiece);
                     board[i, (int)piece.y] = newPiece;
                     newPiece.Position = gridToPixel(new Vector2(i, (int)piece.y));
+                    break;
                 }
             }
         }
@@ -164,11 +171,13 @@ public class Grid : Node2D {
                 // If it's the end of the board, and that spot is null
                 if(i == height - 1 && board[(int)piece.x, i] == null) {
                     moveAndSetBoardValue(piece, new Vector2(piece.x, height-1));
+                    break;
                 }
                 // If this spot is full, and the value is not the same, then move to one before it
                 else if(board[(int)piece.x, i] != null && (board[(int)piece.x, i] as Piece).value != thisValue) {
                     // Move to one before it
                     moveAndSetBoardValue(piece, new Vector2(piece.x, i-1));
+                    break;
                 }
                 // Otherwise, if it's the same:
                 else if(board[(int)piece.x, i] != null && (board[(int)piece.x, i] as Piece).value == thisValue) {
@@ -178,6 +187,7 @@ public class Grid : Node2D {
                     AddChild(newPiece);
                     board[(int)piece.x, i] = newPiece;
                     newPiece.Position = gridToPixel(new Vector2(piece.x, i));
+                    break;
                 }
             }
         }
@@ -186,11 +196,13 @@ public class Grid : Node2D {
                 // If it's the end of the board, and that spot is null
                 if(i == 0 && board[(int)piece.x, i] == null) {
                     moveAndSetBoardValue(piece, new Vector2(piece.x, 0));
+                    break;
                 }
                 // If this spot is full, and the value is not the same, then move to one before it
                 else if(board[(int)piece.x, i] != null && (board[(int)piece.x, i] as Piece).value != thisValue) {
                     // Move to one before it
                     moveAndSetBoardValue(piece, new Vector2(piece.x, i+1));
+                    break;
                 }
                 // Otherwise, if it's the same value:
                 else if(board[(int)piece.x, i] != null && (board[(int)piece.x, i] as Piece).value == thisValue) {
@@ -200,6 +212,7 @@ public class Grid : Node2D {
                     AddChild(newPiece);
                     board[(int)piece.x, i] = newPiece;
                     newPiece.Position = gridToPixel(new Vector2((int)piece.x, i));
+                    break;
                 }
             }
         }
@@ -213,10 +226,10 @@ public class Grid : Node2D {
 
     }
 
-    public void generateNewPiece() {
+    public void generateNewPiece(int numberOfPieces) {
         if (isBlankSpace()) {
             int piecesMade = 0;
-            while (piecesMade < 2) {
+            while (piecesMade < numberOfPieces) {
                 int xPosition = (int)(Math.Floor(RandRange(0,4)));
                 int yPosition = (int)(Math.Floor(RandRange(0,4)));
                 if(board[xPosition, yPosition] == null) {
