@@ -18,4 +18,8 @@ public class Piece : Node2D {
         moveTween.InterpolateProperty(this, "position", Position, newPosition, 0.3f, Tween.TransitionType.Bounce, Tween.EaseType.Out);
         moveTween.Start();
     }
+
+    public void remove() {
+        QueueFree();
+    }
 }
