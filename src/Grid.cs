@@ -230,19 +230,6 @@ public class Grid : Node2D {
     }
 
     public void generateNewPiece(int numberOfPieces) {
-        // SPECIFIC SETUP FOR TESTING
-        // Piece temp = twoPiece.Instance() as Piece;
-        // AddChild(temp);
-        // board[0, 3] = temp;
-        // temp.Position = gridToPixel(new Vector2(0, 3));
-        // Piece temp2 = fourPiece.Instance() as Piece;
-        // AddChild(temp2);
-        // board[2, 3] = temp2;
-        // temp2.Position = gridToPixel(new Vector2(2, 3));
-        // Piece temp3 = fourPiece.Instance() as Piece;
-        // AddChild(temp3);
-        // board[3, 3] = temp3;
-        // temp3.Position = gridToPixel(new Vector2(3, 3));
         if (isBlankSpace()) {
             int piecesMade = 0;
             while (piecesMade < numberOfPieces) {
