@@ -135,7 +135,7 @@ public class Grid : Node2D {
                     moveAndSetBoardValue(piece, new Vector2(i-1, piece.y));
                     break;
                 }
-                // Otherwise, if it's the same:
+                // Otherwise, if it's the same, fuses both and creates one with the next value:
                 else if(board[i, (int)piece.y] != null && (board[i, (int)piece.y] as Piece).value == thisValue) {
                     removeAndClear(piece);
                     removeAndClear(new Vector2(i, piece.y));
@@ -149,18 +149,14 @@ public class Grid : Node2D {
         }
         else if(direction == Vector2.Left) {
             for(int i=(int)nextSpace.x; i>=0; i--) {
-                // If it's the end of the board, and that spot is null
                 if(i == 0 && board[i, (int)piece.y] == null) {
                     moveAndSetBoardValue(piece, new Vector2(0, piece.y));
                     break;
                 }
-                // If this spot is full, and the value is not the same, then move to one before it
                 else if(board[i, (int)piece.y] != null && (board[i, (int)piece.y] as Piece).value != thisValue) {
-                    // Move to one before it
                     moveAndSetBoardValue(piece, new Vector2(i+1, piece.y));
                     break;
                 }
-                // Otherwise, if it's the same value:
                 else if(board[i, (int)piece.y] != null && (board[i, (int)piece.y] as Piece).value == thisValue) {
                     removeAndClear(piece);
                     removeAndClear(new Vector2(i, piece.y));
@@ -174,18 +170,14 @@ public class Grid : Node2D {
         }
         else if(direction == Vector2.Up) {
             for(int i=(int)piece.y+1; i<height; i++) {
-                // If it's the end of the board, and that spot is null
                 if(i == height - 1 && board[(int)piece.x, i] == null) {
                     moveAndSetBoardValue(piece, new Vector2(piece.x, height-1));
                     break;
                 }
-                // If this spot is full, and the value is not the same, then move to one before it
                 else if(board[(int)piece.x, i] != null && (board[(int)piece.x, i] as Piece).value != thisValue) {
-                    // Move to one before it
                     moveAndSetBoardValue(piece, new Vector2(piece.x, i-1));
                     break;
                 }
-                // Otherwise, if it's the same:
                 else if(board[(int)piece.x, i] != null && (board[(int)piece.x, i] as Piece).value == thisValue) {
                     removeAndClear(piece);
                     removeAndClear(new Vector2(piece.x, i));
@@ -199,18 +191,14 @@ public class Grid : Node2D {
         }
         else if(direction == Vector2.Down) {
             for(int i=(int)piece.y-1; i>-1; i--) {
-                // If it's the end of the board, and that spot is null
                 if(i == 0 && board[(int)piece.x, i] == null) {
                     moveAndSetBoardValue(piece, new Vector2(piece.x, 0));
                     break;
                 }
-                // If this spot is full, and the value is not the same, then move to one before it
                 else if(board[(int)piece.x, i] != null && (board[(int)piece.x, i] as Piece).value != thisValue) {
-                    // Move to one before it
                     moveAndSetBoardValue(piece, new Vector2(piece.x, i+1));
                     break;
                 }
-                // Otherwise, if it's the same value:
                 else if(board[(int)piece.x, i] != null && (board[(int)piece.x, i] as Piece).value == thisValue) {
                     removeAndClear(piece);
                     removeAndClear(new Vector2(piece.x, i));
