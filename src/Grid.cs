@@ -69,7 +69,7 @@ public class Grid : Node2D {
 
     public void generateNewPiece() {
         if (isBlankSpace()) {
-            // TODO
+            // TODO: generate a new piece
         } else {
             GD.Print("No more room!");
         }
