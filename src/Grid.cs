@@ -36,6 +36,34 @@ public class Grid : Node2D {
         }
     }
 
+        public void generateNewPiece(int numberOfPieces) {
+        if (isBlankSpace()) {
+            int piecesMade = 0;
+            while (piecesMade < numberOfPieces) {
+                int xPosition = (int)(Math.Floor(RandRange(0,4)));
+                int yPosition = (int)(Math.Floor(RandRange(0,4)));
+                if(board[xPosition, yPosition] == null) {
+                    Piece temp = (Piece)generateTwoOrFour().Instance();
+                    AddChild(temp);
+                    board[xPosition, yPosition] = temp;
+                    temp.Position = gridToPixel(new Vector2(xPosition, yPosition));
+                    piecesMade += 1;
+                }
+            }
+        } else {
+            GD.Print("No more room!");
+        }
+    }
+
+    public PackedScene generateTwoOrFour() {
+        var temp = RandRange(0,100);
+        if(temp <= 75) {
+            return twoPiece;
+        } else {
+            return fourPiece;
+        }
+    }
+
     public Vector2 gridToPixel(Vector2 gridPosition) {
         float newX = xStart + offset * gridPosition.x;
         float newY = yStart + -offset * gridPosition.y;
@@ -137,12 +165,7 @@ public class Grid : Node2D {
                 }
                 // Otherwise, if it's the same, fuses both and creates one with the next value:
                 else if(board[i, (int)piece.y] != null && (board[i, (int)piece.y] as Piece).value == thisValue) {
-                    removeAndClear(piece);
-                    removeAndClear(new Vector2(i, piece.y));
-                    Piece newPiece = tempValue.Instance() as Piece;
-                    AddChild(newPiece);
-                    board[i, (int)piece.y] = newPiece;
-                    newPiece.Position = gridToPixel(new Vector2(i, (int)piece.y));
+                    fusesPiecesAndCreateNewOne(piece, i, (int)piece.y, tempValue);
                     break;
                 }
             }
@@ -158,12 +181,7 @@ public class Grid : Node2D {
                     break;
                 }
                 else if(board[i, (int)piece.y] != null && (board[i, (int)piece.y] as Piece).value == thisValue) {
-                    removeAndClear(piece);
-                    removeAndClear(new Vector2(i, piece.y));
-                    Piece newPiece = tempValue.Instance() as Piece;
-                    AddChild(newPiece);
-                    board[i, (int)piece.y] = newPiece;
-                    newPiece.Position = gridToPixel(new Vector2(i, (int)piece.y));
+                    fusesPiecesAndCreateNewOne(piece, i, (int)piece.y, tempValue);
                     break;
                 }
             }
@@ -179,12 +197,7 @@ public class Grid : Node2D {
                     break;
                 }
                 else if(board[(int)piece.x, i] != null && (board[(int)piece.x, i] as Piece).value == thisValue) {
-                    removeAndClear(piece);
-                    removeAndClear(new Vector2(piece.x, i));
-                    Piece newPiece = tempValue.Instance() as Piece;
-                    AddChild(newPiece);
-                    board[(int)piece.x, i] = newPiece;
-                    newPiece.Position = gridToPixel(new Vector2(piece.x, i));
+                    fusesPiecesAndCreateNewOne(piece, (int)piece.x, i, tempValue);
                     break;
                 }
             }
@@ -200,49 +213,25 @@ public class Grid : Node2D {
                     break;
                 }
                 else if(board[(int)piece.x, i] != null && (board[(int)piece.x, i] as Piece).value == thisValue) {
-                    removeAndClear(piece);
-                    removeAndClear(new Vector2(piece.x, i));
-                    Piece newPiece = tempValue.Instance() as Piece;
-                    AddChild(newPiece);
-                    board[(int)piece.x, i] = newPiece;
-                    newPiece.Position = gridToPixel(new Vector2((int)piece.x, i));
+                    fusesPiecesAndCreateNewOne(piece, (int)piece.x, i, tempValue);
                     break;
                 }
             }
         }
     }
 
+    public void fusesPiecesAndCreateNewOne(Vector2 currPiece, int xPosition, int yPosition, PackedScene tempValue) {
+        removeAndClear(currPiece);
+        removeAndClear(new Vector2(xPosition, yPosition));
+        Piece newPiece = tempValue.Instance() as Piece;
+        AddChild(newPiece);
+        board[xPosition, yPosition] = newPiece;
+        newPiece.Position = gridToPixel(new Vector2(xPosition, yPosition));
+    }
+
     public void removeAndClear(Vector2 piece) {
         (board[(int)piece.x, (int)piece.y] as Piece).remove();
         board[(int)piece.x, (int)piece.y] = null;
-    }
-
-    public void generateNewPiece(int numberOfPieces) {
-        if (isBlankSpace()) {
-            int piecesMade = 0;
-            while (piecesMade < numberOfPieces) {
-                int xPosition = (int)(Math.Floor(RandRange(0,4)));
-                int yPosition = (int)(Math.Floor(RandRange(0,4)));
-                if(board[xPosition, yPosition] == null) {
-                    Piece temp = (Piece)generateTwoOrFour().Instance();
-                    AddChild(temp);
-                    board[xPosition, yPosition] = temp;
-                    temp.Position = gridToPixel(new Vector2(xPosition, yPosition));
-                    piecesMade += 1;
-                }
-            }
-        } else {
-            GD.Print("No more room!");
-        }
-    }
-
-    public PackedScene generateTwoOrFour() {
-        var temp = RandRange(0,100);
-        if(temp <= 75) {
-            return twoPiece;
-        } else {
-            return fourPiece;
-        }
     }
 
     public void _on_TouchControl_Move(Vector2 direction) {
