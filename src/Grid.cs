@@ -66,8 +66,65 @@ public class Grid : Node2D {
         return false;
     }
 
-    public Vector2 moveAllPieces(Vector2 direction) {
-        return new Vector2(0,0);
+    public void moveAllPieces(Vector2 direction) {
+        if(direction == Vector2.Up) {
+
+        } else if(direction == Vector2.Right) {
+            for(int i=0; i<width-1; i++) {
+                for(int j=0; j<height; j++) {
+                    if(board[i, j] != null) {
+                        GD.Print("CHAMANDO PARA: " + i + ' ' + j);
+                        movePiece(new Vector2(i,j), Vector2.Right);
+                    }
+                }
+            }
+        } else if(direction == Vector2.Down) {
+            
+        } else if(direction == Vector2.Left) {
+            
+        } else {
+            // TODO
+        }
+    }
+
+    public void moveAndSetBoardValue(Vector2 currentPosition, Vector2 newPosition) {
+        
+    }
+
+    public void movePiece(Vector2 piece, Vector2 direction) {
+        Piece thisPiece = board[(int)piece.x, (int)piece.y] as Piece;
+        int thisValue = thisPiece.value;
+        GD.Print(piece);
+        GD.Print(direction);
+        Vector2 nextSpace = new Vector2((int)piece.x + direction.x, (int)piece.y + direction.y);
+        PackedScene nextValue = (board[(int)nextSpace.x, (int)nextSpace.y] as PackedScene);
+
+        if(direction == Vector2.Right) {
+            for(int i=(int)nextSpace.x; i<width; i++) {
+                // If it's the end of the board, and that spot is null
+                if(i == width - 1 && board[i, (int)piece.y] == null) {
+                    board[(int)piece.x, (int)piece.y] = null;
+                    thisPiece.move(gridToPixel(new Vector2(width-1, (int)piece.y)));
+                }
+                // If this spot is full, and the value is not the same, then move to one before it
+                if(board[i, (int)piece.y] != null && (board[i, (int)piece.y] as Piece).value != thisValue) {
+                    // Move to one before it
+                    board[(int)piece.x, (int)piece.y] = null;
+                    thisPiece.move(gridToPixel(new Vector2(i-1, (int)piece.y)));
+                }
+                // Otherwise, if it's the same:
+                if(board[i, (int)piece.y] != null && (board[i, (int)piece.y] as Piece).value == thisValue) {
+                    board[(int)piece.x, (int)piece.y] = null;
+                    thisPiece.move(gridToPixel(new Vector2(i, (int)piece.y)));
+                    // (board[i, (int)piece.y] as Piece).starttimer();
+                    Piece newPiece = thisPiece.nextValue.Instance() as Piece;
+                    AddChild(newPiece);
+                    board[i, (int)piece.y] = newPiece;
+                    newPiece.Position = gridToPixel(new Vector2(i, (int)piece.y));
+                    EmitSignal("score_changed", newPiece.value);
+                }
+            }
+        }
     }
 
     public void generateNewPiece() {
