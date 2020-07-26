@@ -1,0 +1,38 @@
+[gd_scene load_steps=9 format=2]
+
+[ext_resource path="res://assets/Background 2.png" type="Texture" id=1]
+[ext_resource path="res://assets/GridBackground.png" type="Texture" id=2]
+[ext_resource path="res://src/Grid.cs" type="Script" id=3]
+[ext_resource path="res://src/TouchControl.cs" type="Script" id=4]
+[ext_resource path="res://src/KeyboardControl.cs" type="Script" id=5]
+[ext_resource path="res://src/Pieces/FourPiece.tscn" type="PackedScene" id=6]
+[ext_resource path="res://src/Pieces/TwoPiece.tscn" type="PackedScene" id=7]
+[ext_resource path="res://src/PieceBackground.tscn" type="PackedScene" id=8]
+
+[node name="Node2D" type="Node2D"]
+
+[node name="TextureRect" type="TextureRect" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+texture = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="BoardBackground" type="Sprite" parent="."]
+position = Vector2( 288, 720 )
+texture = ExtResource( 2 )
+
+[node name="Grid" type="Node2D" parent="."]
+script = ExtResource( 3 )
+twoPiece = ExtResource( 7 )
+fourPiece = ExtResource( 6 )
+backgroundPiece = ExtResource( 8 )
+
+[node name="TouchControl" type="Node2D" parent="."]
+script = ExtResource( 4 )
+
+[node name="KeyboardControl" type="Node2D" parent="."]
+script = ExtResource( 5 )
+[connection signal="Move" from="TouchControl" to="Grid" method="_on_TouchControl_Move"]
+[connection signal="Move" from="KeyboardControl" to="Grid" method="_on_KeyboardControl_Move"]
