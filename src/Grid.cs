@@ -15,6 +15,7 @@ public class Grid : Node2D {
     public float xStart = 96;
     public float yStart = 912;
     public float offset = 128;
+    public bool canControl = true;
     public object[,] board;
 
     private Random _random = new Random();
@@ -66,41 +67,46 @@ public class Grid : Node2D {
         return false;
     }
 
-    public void moveAllPieces(Vector2 direction) {
-        if(direction == Vector2.Right) {
-            for(int i=0; i<width-1; i++) {
-                for(int j=0; j<height; j++) {
-                    if(board[i, j] != null) {
-                        movePiece(new Vector2(i,j), Vector2.Right);
+    async public void moveAllPieces(Vector2 direction) {
+        if(canControl) {
+            canControl = false;
+            if(direction == Vector2.Right) {
+                for(int i=0; i<width-1; i++) {
+                    for(int j=0; j<height; j++) {
+                        if(board[i, j] != null) {
+                            movePiece(new Vector2(i,j), Vector2.Right);
+                        }
+                    }
+                }
+            } else if(direction == Vector2.Left) {
+                for(int i=width-1; i>0; i--) {
+                    for(int j=0; j<height; j++) {
+                        if(board[i, j] != null) {
+                            movePiece(new Vector2(i,j), Vector2.Left);
+                        }
+                    }
+                }
+            } else if(direction == Vector2.Up) {
+                for(int i=0; i<width; i++) {
+                    for(int j=height-1; j>-1; j--) {
+                        if(board[i, j] != null) {
+                            movePiece(new Vector2(i,j), Vector2.Up);
+                        }
+                    }
+                }
+            } else if(direction == Vector2.Down) {
+                for(int i=0; i<width; i++) {
+                    for(int j=0; j<height; j++) {
+                        if(board[i, j] != null) {
+                            movePiece(new Vector2(i,j), Vector2.Down);
+                        }
                     }
                 }
             }
-        } else if(direction == Vector2.Left) {
-            for(int i=width-1; i>0; i--) {
-                for(int j=0; j<height; j++) {
-                    if(board[i, j] != null) {
-                        movePiece(new Vector2(i,j), Vector2.Left);
-                    }
-                }
-            }
-        } else if(direction == Vector2.Up) {
-            for(int i=0; i<width; i++) {
-                for(int j=height-1; j>-1; j--) {
-                    if(board[i, j] != null) {
-                        movePiece(new Vector2(i,j), Vector2.Up);
-                    }
-                }
-            }
-        } else if(direction == Vector2.Down) {
-            for(int i=0; i<width; i++) {
-                for(int j=0; j<height; j++) {
-                    if(board[i, j] != null) {
-                        movePiece(new Vector2(i,j), Vector2.Down);
-                    }
-                }
-            }
+            generateNewPiece(1); 
         }
-        generateNewPiece(1); 
+        await ToSignal(GetTree().CreateTimer(0.33f), "timeout");
+        canControl = true;
     }
 
     public void moveAndSetBoardValue(Vector2 currentPosition, Vector2 newPosition) {
